@@ -27,7 +27,7 @@ JIRA_BASE_URL = os.getenv("JIRA_BASE_URL")
 SUBTASKID = os.getenv("Subtaskid")
 
 
-def create_jira_task(summary: str, epic_key: str, description: str, story_points: int) -> str | None:
+def create_jira_task(summary: str, epic_key: str, description: str, story_points: int, acceptance_criteria: str) -> str | None:
     """
     Create a Jira task under the given epic with specified details.
     Returns the created issue key or None if creation fails.
@@ -55,7 +55,18 @@ def create_jira_task(summary: str, epic_key: str, description: str, story_points
             },
             "issuetype": {"name": "Task"},
             "parent": {"key": epic_key},
-            "customfield_10030": int(story_points)
+            "customfield_10030": story_points,
+            "priority": {"name": "High"},
+            "customfield_10270" : {
+                "type": "doc",
+                "version": 1,
+                "content": [
+                    {
+                        "type": "paragraph",
+                        "content": [{"text": acceptance_criteria, "type": "text"}]
+                    }
+                ]
+            }
         }
     }
 
@@ -83,7 +94,8 @@ def main():
             summary="Test Creating a Jira Ticket for Task",
             epic_key="SCRUM-7",
             description="This is a test description for the Jira Task ticket.",
-            story_points=2
+            story_points=8,
+            acceptance_criteria = "Need to do"
         )
 
     except Exception as e:

@@ -26,7 +26,7 @@ JIRA_BASE_URL = os.environ.get("JIRA_BASE_URL")
 SUBTASKID = os.environ.get("Subtaskid")
 
 
-def create_jira_subtask(summary, parent_story, description, story_points):
+def create_jira_subtask(summary, parent_story, description, story_points, priority, acceptance_criteria):
     url = f"{JIRA_BASE_URL}/rest/api/3/issue"
 
     headers = {
@@ -47,7 +47,18 @@ def create_jira_subtask(summary, parent_story, description, story_points):
             },
             "issuetype": {"id": SUBTASKID},
             "parent": {"key": parent_story},
-            "customfield_10030": story_points
+            "customfield_10030": story_points,
+            "priority": {"name": priority},
+            "customfield_10270" : {
+                "type": "doc",
+                "version": 1,
+                "content": [
+                    {
+                        "type": "paragraph",
+                        "content": [{"text": acceptance_criteria, "type": "text"}]
+                    }
+                ]
+            }
         }
     }
 
@@ -63,4 +74,4 @@ def create_jira_subtask(summary, parent_story, description, story_points):
         logging.error(f"Failed to create Subtask: {response.text}")
         return None
     
-create_jira_subtask("Subtask for SCRUM-34", "SCRUM-34", "This is a subtask under the story SCRUM-34.",8)
+create_jira_subtask("Subtask for SCRUM-34", "SCRUM-67", "This is a subtask under the story SCRUM-34.",8, "Medium", "Added Acceptance Criteria")

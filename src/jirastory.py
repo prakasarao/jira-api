@@ -27,7 +27,7 @@ JIRA_BASE_URL = os.environ.get("JIRA_BASE_URL")
 
 
 
-def create_jira_story(summary, epic_key, description, story_points):
+def create_jira_story(summary, epic_key, description, story_points, priority, acceptance_criteria):
     url = f"{JIRA_BASE_URL}/rest/api/3/issue"
     
     headers = {
@@ -44,7 +44,18 @@ def create_jira_story(summary, epic_key, description, story_points):
             "description": {"type": "doc", "version": 1, "content": [{"type": "paragraph", "content": [{"text": description, "type": "text"}]}]},
             "issuetype": {"name": "Story"},
             "parent": {"key": epic_key},
-            "customfield_10030": int(story_points)
+            "customfield_10030": int(story_points),
+            "priority": {"name": priority},
+            "customfield_10270" : {
+                "type": "doc",
+                "version": 1,
+                "content": [
+                    {
+                        "type": "paragraph",
+                        "content": [{"text": acceptance_criteria, "type": "text"}]
+                    }
+                ]
+            }
         }
     }
 
@@ -61,4 +72,4 @@ def create_jira_story(summary, epic_key, description, story_points):
         logging.error(f"Failed to create Jira ticket: {response.text}")
         return None
 
-create_jira_story("Test Jira Ticket", "SCRUM-7", "This is a test description for the Jira ticket.", 8)
+create_jira_story("Test Jira Ticket", "SCRUM-7", "This is a test description for the Jira ticket.", 8, "Medium", "Added Acceptance Criteria")
