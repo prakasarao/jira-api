@@ -27,7 +27,7 @@ JIRA_BASE_URL = os.environ.get("JIRA_BASE_URL")
 
 
 
-def create_jira_story(summary, epic_key, description, story_points, priority, acceptance_criteria):
+def create_jira_story(title, business_value, description, story_points, priority, acceptance_criteria):
     url = f"{JIRA_BASE_URL}/rest/api/3/issue"
     
     headers = {
@@ -40,10 +40,36 @@ def create_jira_story(summary, epic_key, description, story_points, priority, ac
     payload = {
         "fields": {
             "project": {"key": PROJECT_KEY},
-            "summary": summary,
-            "description": {"type": "doc", "version": 1, "content": [{"type": "paragraph", "content": [{"text": description, "type": "text"}]}]},
+            "summary": title,
+            # "description": {"type": "doc", "version": 1, "content": [{"type": "paragraph", "content": [{"text": description, "type": "text"}]}]},
+            "description": {
+                "type": "doc",
+                "version": 1,
+                "content": [
+                    {
+                        "type": "paragraph",
+                        "content": [
+                            {"type": "text", "text": description}
+                        ]
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": "Business Value: ",
+                                "marks": [{"type": "strong"}]
+                            },
+                            {
+                                "type": "text",
+                                "text": business_value
+                            }
+                        ]
+                    }
+                ]
+            },
             "issuetype": {"name": "Story"},
-            "parent": {"key": epic_key},
+            # "parent": {"key": epic_key},
             "customfield_10030": int(story_points),
             "priority": {"name": priority},
             "customfield_10270" : {
@@ -72,4 +98,4 @@ def create_jira_story(summary, epic_key, description, story_points, priority, ac
         logging.error(f"Failed to create Jira ticket: {response.text}")
         return None
 
-create_jira_story("Test Jira Ticket", "SCRUM-7", "This is a test description for the Jira ticket.", 8, "Medium", "Added Acceptance Criteria")
+create_jira_story("Test Jira Ticket", "Allows customers to find hotels based on their preferences", "This is a test description for the Jira ticket.", 8, "Medium", "Added Acceptance Criteria")
