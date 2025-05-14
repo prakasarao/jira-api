@@ -32,3 +32,12 @@ Install the required dependencies
 
 pip install -r requirements.txt
 
+For Jira Story Creation Smaple Input of the Json File :
+{
+    "title": "Add hotel search feature",
+    "business_value": "Improves user experience",
+    "description": "Allow customers to filter hotels by location, price, and dates",
+    "story_points": 5,
+    "priority": "High",
+    "acceptance_criteria": "Customer can view hotels based on selected filters"
+}
